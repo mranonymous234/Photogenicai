@@ -286,9 +286,10 @@
         status.innerText = "Failed to load image. Try again with a more descriptive prompt.";
       };
     }
+    const filename = img.dataset.filename || 'photogenic_image.png';
 
-    a.href = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
-    a.download = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
+    a.href = 'photogenic_image.png';
+    a.download = 'photogenic_image.png';
 
     function downloadImage() {
       const img = document.getElementById('generated-img');
