@@ -220,7 +220,7 @@
     
     <div class="image-container">
       <img id="generated-img" src="" alt="" />
-      <a id="download-btn" href=`${imageUrl}` download=`${imageUrl}`>Download Image</a>
+      <a id="download-btn" href="" download="">Download Image</a>
     </div>
   </div>
 
@@ -286,6 +286,9 @@
         status.innerText = "Failed to load image. Try again with a more descriptive prompt.";
       };
     }
+
+    a.href = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
+    a.download = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
 
     function downloadImage() {
       const img = document.getElementById('generated-img');
