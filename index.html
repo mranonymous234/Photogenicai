@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PhotoGenic AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --primary-hover: #4f46e5;
+      --success-color: #10b981;
+      --success-hover: #059669;
+      --background: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --border-radius: 12px;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--background);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin: 1rem auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 0.5rem;
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 2.5rem;
+    }
+
+    .tagline {
+      font-style: italic;
+      text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    input::placeholder {
+      color: #9ca3af;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      font-size: 1rem;
+      font-weight: 500;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #status {
+      margin: 1.5rem 0;
+      font-style: italic;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .image-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+
+    #generated-img {
+      max-width: 100%;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      display: none;
+      transition: var(--transition);
+    }
+
+    #download-btn {
+      display: none;
+      margin-top: 1.5rem;
+      background-color: var(--success-color);
+      color: white;
+      text-decoration: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      transition: var(--transition);
+      text-align: center;
+      cursor: pointer;
+    }
+
+    #download-btn:hover {
+      background-color: var(--success-hover);
+      transform: translateY(-2px);
+    }
+
+    /* Loading animation */
+    .loading {
+      display: none;
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(99, 102, 241, 0.2);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+      margin: 2rem auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .container {
+        padding: 1.2rem;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PhotoGenic AI</h1>
+    <p class="tagline">Powered by Pollinations AI. Made with absolutely no warranty.</p>
+    
+    <div class="input-group">
+      <input id="focus" placeholder="Focus / Subject (e.g. floating castle in the sky)" />
+      <input id="adj1" placeholder="Adjective 1 (e.g. dreamy)" />
+      <input id="adj2" placeholder="Adjective 2 (e.g. colorful)" />
+      <input id="vs1" placeholder="Visual Style 1 (e.g. watercolor)" />
+      <input id="vs2" placeholder="Visual Style 2 (e.g. soft lighting)" />
+      <input id="vs3" placeholder="Visual Style 3 (e.g. cinematic composition)" />
+      <input id="artist" placeholder="Artist Reference (e.g. Hayao Miyazaki)" />
+    </div>
+
+    <button onclick="generateImage()">Generate Image</button>
+    
+    <p id="status">Waiting for your prompt...</p>
+    <div class="loading" id="loading-spinner"></div>
+    
+    <div class="image-container">
+      <img id="generated-img" src="" alt="" />
+      <button id="download-btn" onclick="downloadImage()">Download Image</button>
+    </div>
+  </div>
+
+  <script>
+    function generateImage() {
+      const get = (id, fallback) => {
+        const value = document.getElementById(id).value.trim();
+        return value !== "" ? value : fallback;
+      };
+
+      const focus = get('focus');
+      if (!focus) {
+        document.getElementById('status').innerText = "Please enter a subject/focus for your image.";
+        return;
+      }
+
+      const adj1 = get('adj1', '');
+      const adj2 = get('adj2', '');
+      const vs1 = get('vs1', '');
+      const vs2 = get('vs2', '');
+      const vs3 = get('vs3', '');
+      const artist = get('artist', '');
+
+      // Build prompt with only non-empty values
+      let promptParts = [focus];
+      if (adj1) promptParts.push(adj1);
+      if (adj2) promptParts.push(adj2);
+      if (vs1) promptParts.push(vs1);
+      if (vs2) promptParts.push(vs2);
+      if (vs3) promptParts.push(vs3);
+      if (artist) promptParts.push(artist);
+
+      const prompt = promptParts.join(',%20');
+      const encodedPrompt = encodeURIComponent(prompt);
+      const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
+
+      const img = document.getElementById('generated-img');
+      const status = document.getElementById('status');
+      const downloadBtn = document.getElementById('download-btn');
+      const loadingSpinner = document.getElementById('loading-spinner');
+
+      status.innerText = "Generating your image...";
+      img.style.display = "none";
+      downloadBtn.style.display = "none";
+      loadingSpinner.style.display = "block";
+      
+      img.src = imageUrl;
+      img.alt = promptParts.join(', ');
+
+      img.onload = () => {
+        loadingSpinner.style.display = "none";
+        img.style.display = "block";
+        status.innerText = "Image generated successfully!";
+        // Store the image URL for later download
+        img.dataset.imageUrl = imageUrl;
+        // Generate a filename based on the prompt
+        img.dataset.filename = `photogenic_${focus.replace(/\s+/g, '_').toLowerCase()}.png`;
+        downloadBtn.style.display = "block";
+      };
+
+      img.onerror = () => {
+        loadingSpinner.style.display = "none";
+        status.innerText = "Failed to load image. Try again with a more descriptive prompt.";
+      };
+    }
+
+    function downloadImage() {
+      const img = document.getElementById('generated-img');
+      const imageUrl = img.dataset.imageUrl;
+      const filename = img.dataset.filename || 'photogenic_image.png';
+      
+      // Create a canvas element to draw the image
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas dimensions to match the image
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      
+      // Draw the image on the canvas
+      ctx.drawImage(img, 0, 0);
+      
+      // For browsers that support the download attribute
+      try {
+        // Convert canvas to blob and create download link
+        canvas.toBlob(function(blob) {
+          const url = URL.createObjectURL(blob);
+          const downloadLink = document.createElement('a');
+          downloadLink.href = url;
+          downloadLink.download = filename;
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+          
+          // Clean up the object URL after download
+          setTimeout(() => {
+            URL.revokeObjectURL(url);
+          }, 100);
+        }, 'image/png');
+      } catch (e) {
+        // Fallback for browsers that don't support the above method
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  </script>
+</body>
+</html>
